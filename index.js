@@ -2,7 +2,7 @@ const url = require('url')
 const http = require('http')
 const https = require('https')
 const fs = require('fs')
-const iconv = require('iconv-lite');
+const iconv = require('iconv-lite')
 const JSDOM = require("jsdom").JSDOM
 const comparison = require('./comparison.json')
 
@@ -18,9 +18,16 @@ const comparison = require('./comparison.json')
  * 3.【书籍封面/介绍/加入书架/其他书籍推荐】使用自己的；【全本缓存/阅读/目录】使用对应源头爬取的
  */
 
-function start(type, address) {
+/**
+ * 爬取小说
+ * @param name 书籍名称
+ * @param masterStation 主站地址
+ * @param address 书籍路径
+ */
+function crawl(name, masterStation, address) {
     // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
-    const protocol = url.parse(address).protocol
+    const fullAddress = masterStation + address
+    const protocol = url.parse(fullAddress).protocol
     let newHp
     switch (protocol) {
         case 'http:': {
@@ -33,14 +40,14 @@ function start(type, address) {
         }
         default: break
     }
-    newHp.get(address, function (res) {
+    newHp.get(fullAddress, function (res) {
         let chunks = []
         res.on('data', function (data) {
             chunks.push(data)
         })
         res.on('end', function () {
             const html = iconv.decode(Buffer.concat(chunks), 'gb2312')
-            analysisHtml(type, html)
+            analysisHtml(masterStation, name, html)
         })
     }).on('error', function () {
         console.log('获取资源出错！')
@@ -48,56 +55,72 @@ function start(type, address) {
 }
 
 /** 分析HTML */
-function analysisHtml(type, html) {
-    switch (type) {
-        case 'https://www.xbiqugexsw.com/': {
-            xbiqugeHtml(html)
-            break
-        }
+function analysisHtml(masterStation, name, html) {
+    switch (masterStation) {
         case 'https://m.x23us.com/': {
-            ddxssjbHtml(html)
+            ddxssjbHtml(name, html)
             break
         }
         default: {
-            console.log('没有获取到HTML');
+            console.log('没有获取到HTML')
             break
         }
     }
 }
 
 /** 顶点小说手机版 html解析 */
-function ddxssjbHtml(html) {
+function ddxssjbHtml(name, html) {
     const document = new JSDOM(html).window.document
     if (document) {
-        const list = document.getElementsByClassName('chapter')
-        if (list && list.length) {
-            fs.writeFile('./data.json', list[0].querySelectorAll('li')[0].innerHTML, (err) => {
-                if (err) console.log(err)
+        let list = []
+        const htmlSplit = html.split('<li><span></span><a href="')
+        for (let i = 1; i < htmlSplit.length; i++) {
+            const hs = htmlSplit[i].split('">')
+            const address = hs[0]
+            const chapterName = hs[1].split('</a>')[0]
+            list.push({ chapterName, address })
+        }
+        save(name, list)
+    } else {
+        console.log('document没有创建成功')
+    }
+}
+
+/** 写入本地 */
+function save(name, list) {
+    if (!list || !list.length) return console.log('没有找到目录')
+    const route = `${__dirname}/books/${name}`
+    if (!fs.existsSync(route)) {
+        fs.mkdir(route, { recursive: true }, (err) => {
+            if (err) console.log(err)
+            fs.writeFileSync(`${route}/list.json`, JSON.stringify(list), (error) => {
+                if (error) console.log(error)
+                console.log('爬取完成')
             })
-            console.log(list[0].querySelectorAll('li')[0].innerHTML)
-
-        } else {
-            console.log('目录列表获取出现问题')
-        }
+        })
     } else {
-        console.log('document没有创建成功')
+        console.log('目录已存在')
     }
 }
 
-/** 新笔趣阁 html解析 */
-function xbiqugeHtml(html) {
-    const document = new JSDOM(html).window.document
-    if (document) {
-        const list = document.querySelector('#list')
-        if (list) {
-            console.log(list.querySelectorAll('dl>dd')[0].textContent)
-        } else {
-            console.log('目录列表获取出现问题')
-        }
+/** 读取本地书籍数据 */
+function load(name, callBack) {
+    const route = `${__dirname}/books/${name}`
+    if (fs.existsSync(route)) {
+        fs.readFile(`${route}/list.json`, {}, (error, data) => {
+            if (error) console.log(error)
+            if (callBack) callBack(data)
+            console.log('读取完成')
+        })
     } else {
-        console.log('document没有创建成功')
+        console.log('目录不存在')
     }
 }
 
-start(comparison[1].address,
-    comparison[1].address + comparison[1].otherAddress + comparison[1].books[0].id)
+const argv = process.argv
+if (argv[2] === 'crawl') {
+    const cs = comparison[0]
+    crawl(cs.books[0].bookName, cs.address, cs.otherAddress + cs.books[0].id)
+} else if (argv[2] === 'load') {
+    load(argv[3])
+}

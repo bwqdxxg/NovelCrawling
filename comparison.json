@@ -1,16 +1,5 @@
 [
     {
-        "name": "新笔趣阁",
-        "address": "https://www.xbiqugexsw.com/",
-        "otherAddress": "book/",
-        "books": [
-            {
-                "bookName": "仙逆",
-                "id": "41358"
-            }
-        ]
-    },
-    {
         "name": "顶点小说手机版",
         "address": "https://m.x23us.com/",
         "otherAddress": "html/",
