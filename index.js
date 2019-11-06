@@ -24,25 +24,31 @@ const { readNovel } = require('./load')
 /**
  * 爬取小说
  * @param name 书籍名称
- * @param masterStation 主站地址
+ * @param masterStation 主站地址（源）
  * @param address 书籍路径
  */
 function crawl(name, masterStation, address) {
     crawlNovel(name, masterStation, address)
 }
 
-/** 读取本地书籍数据 */
-function read(name, callBack) {
-    readNovel(name, (err, data) => {
-        if (err) console.log(err)
-        else callBack(data)
+/** 读取本地书籍数据
+ * @param name 书籍名称
+ * @param masterStation 主站地址（源）
+ * @param callBack 数据回调
+ */
+function read(name, masterStation, callBack) {
+    readNovel(name, masterStation, (err, data) => {
+        if (err) {
+            console.log(err)
+            callBack()
+        } else callBack(data)
     })
 }
 
 const argv = process.argv
+const cs = comparison[0]
 if (argv[2] === 'crawl') {
-    const cs = comparison[0]
     crawl('仙逆', cs.address, cs.otherAddress + '0/352/')
 } else if (argv[2] === 'load') {
-    read(argv[3])
+    read(argv[3], cs.address)
 }
