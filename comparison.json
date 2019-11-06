@@ -2,12 +2,6 @@
     {
         "name": "顶点小说手机版",
         "address": "https://m.x23us.com/",
-        "otherAddress": "html/",
-        "books": [
-            {
-                "bookName": "仙逆",
-                "id": "0/352/"
-            }
-        ]
+        "otherAddress": "html/"
     }
 ]

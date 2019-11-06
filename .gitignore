@@ -6,3 +6,8 @@
 !/package.json
 !/README.md
 !/yarn.lock
+!/crawl
+!/load
+!/analysis.js
+!/books
+!/interface
