@@ -11,14 +11,16 @@ const { readNovel } = require('./load')
  * 2.3.node需要写接口程序供前端调用返回对应数据
  * 2.4.缓存的数据可存于数据库或服务器本地文件
  * 3.每个源的解析方式都不同，所以每个源都需要单独写解析，将其每本书对应的网址和其相关资源进行存储
+ * 3.1.每个源的爬取解析程序由三部分组成：爬取全部书籍、爬取每本书的目录、爬取每章节的所有文章内容
+ * 3.2.全部书籍对应的目录信息都存入本地，每章节的内容则只临时爬取后返回
  * 页面组成部分：
  * 1.个人书架/书城/我的（暂定）
  * 2.点击书籍=》书籍介绍（书籍封面/介绍/加入书架/其他书籍推荐/全本缓存/阅读/目录）
  * 3.【书籍封面/介绍/加入书架/其他书籍推荐】使用自己的；【全本缓存/阅读/目录】使用对应源头爬取的
  * 未完成：
  * 1.接口程序
- * 2.定时爬取所有源对应所有书籍到本地
- * 3.爬取源无效/无法获取，自动跳到下个源；爬取书籍过程超时自动重连，重连次数超过指定数自动跳过开始爬取下一本
+ * 2.定时爬取所有源对应所有书籍目录到本地
+ * 2.1.爬取源无效/无法获取，自动跳到下个源；爬取书籍过程超时自动重连，重连次数超过指定数自动跳过开始爬取下一本
  */
 
 /**
@@ -26,9 +28,15 @@ const { readNovel } = require('./load')
  * @param name 书籍名称
  * @param masterStation 主站地址（源）
  * @param address 书籍路径
+ * @param {'list'|'content'} type 爬取类型
  */
-function crawl(name, masterStation, address) {
-    crawlNovel(name, masterStation, address)
+function crawl(name, masterStation, address, type) {
+    crawlNovel(name, masterStation, address, type, (success, name, data) => {
+        if (!success) console.log('爬取失败')
+        else if (type === 'content') {
+            console.log(name, data.slice(0, 100))
+        }
+    })
 }
 
 /** 读取本地书籍数据
@@ -48,7 +56,7 @@ function read(name, masterStation, callBack) {
 const argv = process.argv
 const cs = comparison[0]
 if (argv[2] === 'crawl') {
-    crawl('仙逆', cs.address, cs.otherAddress + '0/352/')
+    crawl('仙逆', cs.address, cs.otherAddress + '0/352/10299759.html', 'content')
 } else if (argv[2] === 'load') {
     read(argv[3], cs.address)
 }
