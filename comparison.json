@@ -9,61 +9,15 @@
                 "name": "玄幻魔法",
                 "id": "1",
                 "other": "_",
-                "maxPage": 277
+                "lastOther": ".html",
+                "maxPage": 3
             },
             {
                 "name": "武侠修真",
                 "id": "2",
                 "other": "_",
-                "maxPage": 148
-            },
-            {
-                "name": "都市言情",
-                "id": "3",
-                "other": "_",
-                "maxPage": 391
-            },
-            {
-                "name": "历史军事",
-                "id": "4",
-                "other": "_",
-                "maxPage": 312
-            },
-            {
-                "name": "侦探推理",
-                "id": "5",
-                "other": "_",
-                "maxPage": 18
-            },
-            {
-                "name": "网游动漫",
-                "id": "6",
-                "other": "_",
-                "maxPage": 73
-            },
-            {
-                "name": "科幻小说",
-                "id": "7",
-                "other": "_",
-                "maxPage": 94
-            },
-            {
-                "name": "恐怖灵异",
-                "id": "8",
-                "other": "_",
-                "maxPage": 33
-            },
-            {
-                "name": "散文诗词",
-                "id": "9",
-                "other": "_",
-                "maxPage": 32
-            },
-            {
-                "name": "其他类型",
-                "id": "10",
-                "other": "_",
-                "maxPage": 176
+                "lastOther": ".html",
+                "maxPage": 2
             }
         ]
     }

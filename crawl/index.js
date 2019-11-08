@@ -2,7 +2,7 @@ const { save } = require('./save')
 const { masterStationClassBooks, everyClassBooks, classBooks } = require('./everyClassBooks').api
 const { allBookList, crawlNovel } = require('./everyBookList').api
 
-exports.api = { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, crawlNovel, everyClassBooks, classBooks }
+// exports.api = { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, crawlNovel, everyClassBooks, classBooks }
 
 /** 爬取每个分类下所有书记列表=>爬取每个书籍的目录 */
 function integration() {
@@ -29,7 +29,15 @@ function masterStationClassBooksMethods(callBack) {
     })
 }
 
-/** 爬取指定allBooks中所有书籍的目录到本地 */
+/** 爬取指定源和allBooks中所有书籍的目录到本地 */
 function allBooksSaveLocalhost(comparisonIndex, list, callBack) {
     allBookList(0, comparisonIndex, list, (msg) => callBack(msg))
 }
+
+const fs = require('fs')
+console.log(fs.existsSync('C:\\Users\\黑白\\Desktop\\test project\\GitHub\\NovelCrawling\\crawl/../books/m.x23us.com/'))
+fs.unlinkSync('C:\\Users\\黑白\\Desktop\\test project\\GitHub\\NovelCrawling\\crawl/../books/m.x23us.com')
+
+// masterStationClassBooksMethods((msg, comparisonIndex, data) => {
+//     console.log(msg, comparisonIndex ? comparisonIndex.address : 'c', data ? data.slice(0, 20) : 'd')
+// })
