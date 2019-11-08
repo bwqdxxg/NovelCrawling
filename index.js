@@ -1,5 +1,5 @@
 const comparison = require('./comparison.json')
-const { crawlNovel } = require('./crawl').api
+const { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, crawlNovel, everyClassBooks, classBooks } = require('./crawl').api
 const { readNovel } = require('./load')
 
 /**

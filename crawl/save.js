@@ -9,7 +9,7 @@ const fs = require('fs')
  */
 exports.save = function (route, name, list, callBack) {
     if (!list || !list.length) return callBack(false, '要写入的内容不存在')
-    if (fs.existsSync(route)) fs.unlinkSync(route)
+    if (fs.existsSync(route)) deleteFolderRecursive(route)
     // recursive：递归创建文件夹
     fs.mkdir(route, { recursive: true }, (err) => {
         if (err) console.log(err)
@@ -22,4 +22,19 @@ exports.save = function (route, name, list, callBack) {
         })
         if (!isErr) callBack(true, '存入本地完成！')
     })
+}
+
+/** 递归删除文件夹和文件 */
+function deleteFolderRecursive(path) {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach(function (file) {
+            var curPath = path + "/" + file
+            if (fs.statSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath)
+            } else {
+                fs.unlinkSync(curPath)
+            }
+        });
+        fs.rmdirSync(path)
+    }
 }
