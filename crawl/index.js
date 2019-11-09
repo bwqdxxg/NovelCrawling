@@ -1,8 +1,10 @@
 const { save } = require('./save')
 const { masterStationClassBooks, everyClassBooks, classBooks } = require('./everyClassBooks').api
 const { allBookList, crawlNovel } = require('./everyBookList').api
+const { getHtml } = require('./getHtml')
+const { analysisHtml } = require('./analysisHtml')
 
-exports.api = { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, crawlNovel, everyClassBooks, classBooks }
+exports.api = { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, bookContent, crawlNovel, everyClassBooks, classBooks }
 
 /** 爬取每个分类下所有书记列表=>爬取每个书籍的目录 */
 function integration() {
@@ -34,4 +36,19 @@ function masterStationClassBooksMethods(callBack) {
 /** 爬取指定源和allBooks中所有书籍的目录到本地 */
 function allBooksSaveLocalhost(comparisonIndex, list, callBack) {
     allBookList(0, comparisonIndex, list, (msg) => callBack(msg))
+}
+
+/** 爬取指定地址的书籍文章内容
+ * @param {(err,name,data)=>void} callBack
+ */
+function bookContent(name, masterStation, address, callBack) {
+    getHtml(name, masterStation, address, (err, html) => {
+        if (err) callBack(err)
+        else {
+            analysisHtml(masterStation, name, html, 'content', (err, name, data) => {
+                if (err) callBack(err)
+                else callBack(null, name, data)
+            })
+        }
+    })
 }
