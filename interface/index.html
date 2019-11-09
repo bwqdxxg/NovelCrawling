@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+    <script>
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:3002/content?master=0&id=0/147/&chapter=33977626.html',
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+
+</html>
