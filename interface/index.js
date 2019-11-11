@@ -14,6 +14,12 @@ app.all('*', function (req, res, next) {
     next()
 })
 
+/** 获取源配置文件
+ */
+app.get('/comparison', function (req, res) {
+    resMethods(res, 200, comparison)
+})
+
 /** 获取指定源分类列表
  * query:
  * @param {number} master 使用第几个源

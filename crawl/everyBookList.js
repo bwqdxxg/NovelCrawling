@@ -15,10 +15,10 @@ function allBookList(index, comparisonIndex, list, callBack) {
     const li = list[index]
     if (!li) return callBack('书籍目录爬取写入完成！')
     crawlNovel(li.name, comparisonIndex.address, comparisonIndex.novelOtherAddress + li.id, 'list', (success, msg) => {
-        if (success) console.log(`爬取并写入${li.name}成功，开始爬取下一本`)
-        else console.log(`爬取并写入${li.name}失败，错误：${msg}，开始爬取下一本`)
-        allBookList(index + 1, comparisonIndex, list, callBack)
+        if (success) console.log(`爬取并写入${li.name}成功`)
+        else console.log(`爬取并写入${li.name}失败`)
     })
+    allBookList(index + 1, comparisonIndex, list, callBack)
 }
 
 /**
