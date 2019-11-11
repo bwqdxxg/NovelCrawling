@@ -6,7 +6,7 @@ const comparison = require('../comparison.json')
 exports.api = { masterStationClassBooks, everyClassBooks, classBooks }
 
 /** 爬取每个源每个分类下的所有书籍列表
- * @param index 分类/递归数
+ * @param index 源/递归数
  * @param {(err:string, comparisonIndex, list) => void} callBack
  */
 function masterStationClassBooks(index, callBack) {
