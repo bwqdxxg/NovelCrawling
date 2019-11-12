@@ -1,4 +1,5 @@
 /** 爬取所有分类下书籍列表的方法集 */
+const fs = require('fs')
 const { getHtml } = require('./getHtml')
 const { analysisHtml } = require('./analysisHtml')
 const comparison = require('../comparison.json')
