@@ -18,6 +18,12 @@ function integration() {
     })
 }
 
+// masterStationClassBooksMethods((msg, comparisonIndex, data) => {console.log(msg)})
+
+// const comparison = require('../comparison.json')
+// const list = require('../books/m.x23us.com/allBooks.json')
+// allBookList(0, comparison[0], list, (msg) => console.log(msg))
+
 /** 爬取每个源每个分类下所有书籍列表 并存入到对应源文件夹的allBooks.json */
 function masterStationClassBooksMethods(callBack) {
     masterStationClassBooks(0, (err, comparisonIndex, list) => {

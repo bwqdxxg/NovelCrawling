@@ -14,7 +14,9 @@ function masterStationClassBooks(index, callBack) {
     if (!comparisonIndex) return callBack('爬取完成！')
     everyClassBooks(0, comparisonIndex, [], (err, list) => {
         if (err) {
-            console.log(`爬取${comparisonIndex.address}源失败，错误：${err}，开始寻找下一个爬取源`)
+            const debug = `爬取${comparisonIndex.address}源失败，错误：${err}，开始寻找下一个爬取源`
+            fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${debug}\n`)
+            console.log(debug)
         } else {
             callBack(null, comparisonIndex, list)
             console.log(`爬取${comparisonIndex.address}源完成，开始寻找下一个爬取源`)
