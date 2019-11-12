@@ -13,6 +13,7 @@ const iconv = require('iconv-lite')
  */
 exports.getHtml = function (name, masterStation, address, callBack) {
     // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+    let isTimeout = false
     const fullAddress = masterStation + address
     const protocol = url.parse(fullAddress).protocol
     let newHp
@@ -29,10 +30,12 @@ exports.getHtml = function (name, masterStation, address, callBack) {
     }
     console.log('开始爬取 ' + masterStation + '：' + name)
     const timeOut = setTimeout(() => {
+        isTimeout = true
         callBack('获取资源超时！')
-    }, 10000)
+    }, 5000)
     newHp.get(fullAddress, function (res) {
-        clearTimeout(timeOut)
+        if (timeOut) clearTimeout(timeOut)
+        if (isTimeout) return
         let chunks = []
         res.on('data', function (data) {
             chunks.push(data)

@@ -18,7 +18,7 @@ function integration() {
     })
 }
 
-// masterStationClassBooksMethods((msg, comparisonIndex, data) => {console.log(msg)})
+masterStationClassBooksMethods((msg, comparisonIndex, data) => {console.log(msg)})
 
 // const comparison = require('../comparison.json')
 // const list = require('../books/m.x23us.com/allBooks.json')
