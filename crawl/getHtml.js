@@ -28,7 +28,11 @@ exports.getHtml = function (name, masterStation, address, callBack) {
         default: break
     }
     console.log('开始爬取 ' + masterStation + '：' + name)
+    const timeOut = setTimeout(() => {
+        callBack('获取资源超时！')
+    }, 10000)
     newHp.get(fullAddress, function (res) {
+        clearTimeout(timeOut)
         let chunks = []
         res.on('data', function (data) {
             chunks.push(data)

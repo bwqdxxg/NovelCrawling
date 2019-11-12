@@ -98,3 +98,5 @@ function classBooks(index, masterStation, comparisonClass, fullAddress, callBack
     })
     if (index < comparisonClass.maxPage) classBooks(index + 1, masterStation, comparisonClass, fullAddress, callBack)
 }
+
+masterStationClassBooks(0, (msg) => console.log(msg))
