@@ -23,8 +23,8 @@ function allBookList(index, comparisonIndex, list, callBack) {
                 fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${debug}\n`)
                 console.log(debug)
             }
+            allBookList(index + 1, comparisonIndex, list, callBack)
         })
-        allBookList(index + 1, comparisonIndex, list, callBack)
     }
 }
 
