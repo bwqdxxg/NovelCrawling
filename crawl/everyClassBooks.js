@@ -32,14 +32,16 @@ function masterStationClassBooks(index, callBack) {
  */
 function everyClassBooks(index, comparisonIndex, list, callBack) {
     const ci = comparisonIndex.classArr[index]
-    if (!ci) return callBack(null, list)
-    classBooks(1, comparisonIndex.address, ci, comparisonIndex.address + comparisonIndex.classOtherAddress, [], (err, data) => {
-        if (err) callBack(err)
-        else {
-            const newlist = [...list, ...data]
-            everyClassBooks(index + 1, comparisonIndex, newlist, callBack)
-        }
-    })
+    if (!ci) callBack(null, list)
+    else {
+        classBooks(1, comparisonIndex.address, ci, comparisonIndex.address + comparisonIndex.classOtherAddress, [], (err, data) => {
+            if (err) callBack(err)
+            else {
+                const newlist = [...list, ...data]
+                everyClassBooks(index + 1, comparisonIndex, newlist, callBack)
+            }
+        })
+    }
 }
 
 /** 爬取指定分类下所有书籍列表
@@ -51,18 +53,22 @@ function everyClassBooks(index, comparisonIndex, list, callBack) {
  * @param {(err:string, list) => void} callBack
  */
 function classBooks(index, masterStation, comparisonClass, fullAddress, list, callBack) {
-    if (index > comparisonClass.maxPage) return callBack(null, list)
-    const address = comparisonClass.id + comparisonClass.other + index + comparisonClass.lastOther
-    getHtml(`${comparisonClass.name} 第${index}页`, fullAddress, address, (err, html) => {
-        if (err) callBack(err)
-        else {
-            analysisHtml(masterStation, comparisonClass.name, html, 'class', (err, name, data) => {
-                if (err) callBack(name + err)
-                else {
-                    const newlist = [...list, ...data]
-                    classBooks(index + 1, masterStation, comparisonClass, fullAddress, newlist, callBack)
-                }
-            })
-        }
-    })
+    if (index > comparisonClass.maxPage) callBack(null, list)
+    else {
+        const address = comparisonClass.id + comparisonClass.other + index + comparisonClass.lastOther
+        getHtml(`${comparisonClass.name} 第${index}页`, fullAddress, address, (err, html) => {
+            if (err) {
+                callBack(err)
+                classBooks(index + 1, masterStation, comparisonClass, fullAddress, list, callBack)
+            } else {
+                analysisHtml(masterStation, comparisonClass.name, html, 'class', (err, name, data) => {
+                    if (err) callBack(name + err)
+                    else {
+                        const newlist = [...list, ...data]
+                        classBooks(index + 1, masterStation, comparisonClass, fullAddress, newlist, callBack)
+                    }
+                })
+            }
+        })
+    }
 }

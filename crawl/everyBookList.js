@@ -1,4 +1,5 @@
 /** 爬取所有书籍目录方法集 */
+const fs = require('fs')
 const { getHtml } = require('./getHtml')
 const { analysisHtml } = require('./analysisHtml')
 const { save } = require('./save')
@@ -13,12 +14,18 @@ exports.api = { allBookList, crawlNovel }
  */
 function allBookList(index, comparisonIndex, list, callBack) {
     const li = list[index]
-    if (!li) return callBack('书籍目录爬取写入完成！')
-    crawlNovel(li.name, comparisonIndex.address, comparisonIndex.novelOtherAddress + li.id, 'list', (success, msg) => {
-        if (success) console.log(`爬取并写入${li.name}成功`)
-        else console.log(`爬取并写入${li.name}失败`)
-    })
-    allBookList(index + 1, comparisonIndex, list, callBack)
+    if (!li) callBack('书籍目录爬取写入完成！')
+    else {
+        crawlNovel(li.name, comparisonIndex.address, comparisonIndex.novelOtherAddress + li.id, 'list', (success, msg) => {
+            if (success) console.log(`爬取并写入${li.name}成功`)
+            else {
+                const debug = `爬取${comparisonIndex.address}源并写入${li.name}失败`
+                fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${debug}\n`)
+                console.log(debug)
+            }
+        })
+        allBookList(index + 1, comparisonIndex, list, callBack)
+    }
 }
 
 /**

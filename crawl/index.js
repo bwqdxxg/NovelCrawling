@@ -18,7 +18,7 @@ function integration() {
     })
 }
 
-/** 爬取每个分类下所有书籍列表 并存入到对应源文件夹的allBooks.json */
+/** 爬取每个源每个分类下所有书籍列表 并存入到对应源文件夹的allBooks.json */
 function masterStationClassBooksMethods(callBack) {
     masterStationClassBooks(0, (err, comparisonIndex, list) => {
         if (err) {

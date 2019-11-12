@@ -1,4 +1,5 @@
 /** 分析HTML方法集（方法名要与analysis.js配置文件里的方法名相同） */
+const fs = require('fs')
 const { analysisConfig } = require('../analysis')
 
 const analysisHtmlMethods = { ddxssjbHtml }
@@ -65,6 +66,10 @@ function ddxssjbHtml(name, html, type, callBack) {
             const htmlSplit = html.split('<li><span></span><a href="')
             for (let i = 1; i < htmlSplit.length; i++) {
                 const hs = htmlSplit[i].split('">')
+                if (!hs[1]) {
+                    fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${name}文章目录第${i}条split失败！\n`)
+                    continue
+                }
                 const address = hs[0]
                 const chapterName = hs[1].split('</a>')[0]
                 list.push({ chapterName, address })
