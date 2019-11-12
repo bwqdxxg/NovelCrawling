@@ -17,7 +17,7 @@ function allBookList(index, comparisonIndex, list, callBack) {
     if (!li) callBack('书籍目录爬取写入完成！')
     else {
         crawlNovel(li.name, comparisonIndex.address, comparisonIndex.novelOtherAddress + li.id, 'list', (success, msg) => {
-            if (success) console.log(`爬取并写入${li.name}成功`)
+            if (success) console.log(`爬取并写入${li.name}成功,${success}`)
             else {
                 const debug = `爬取${comparisonIndex.address}源并写入${li.name}失败`
                 fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${debug}\n`)
@@ -37,30 +37,33 @@ function allBookList(index, comparisonIndex, list, callBack) {
  * @param callBack 回调程序
  */
 function crawlNovel(name, masterStation, address, type, callBack) {
-    getHtml(name, masterStation, address, (err, html) => {
-        if (err) callBack(false, err)
-        else {
-            console.log(masterStation + '：' + name + ' 的HTML已获取完成，开始解析。。。')
-            analysisHtml(masterStation, name, html, type, (err, name, data) => {
-                if (err) console.log(err)
-                else {
-                    console.log(masterStation + '：' + name + ' 的HTML已解析完成！')
-                    switch (type) {
-                        case 'content': {
-                            callBack(true, name, data)
-                            break
+    if (fs.existsSync(`${__dirname}/../books/${masterStation.split('://')[1]}/${name}`)) callBack(`${name}已存在，跳过下一本`)
+    else {
+        getHtml(name, masterStation, address, (err, html) => {
+            if (err) callBack(false, err)
+            else {
+                console.log(masterStation + '：' + name + ' 的HTML已获取完成，开始解析。。。')
+                analysisHtml(masterStation, name, html, type, (err, name, data) => {
+                    if (err) console.log(err)
+                    else {
+                        console.log(masterStation + '：' + name + ' 的HTML已解析完成！')
+                        switch (type) {
+                            case 'content': {
+                                callBack(true, name, data)
+                                break
+                            }
+                            case 'list': {
+                                const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
+                                save(route, 'list.json', data, (success, msg) => {
+                                    callBack(success, msg)
+                                })
+                                break
+                            }
+                            default: break
                         }
-                        case 'list': {
-                            const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
-                            save(route, 'list.json', data, (success, msg) => {
-                                callBack(success, msg)
-                            })
-                            break
-                        }
-                        default: break
                     }
-                }
-            })
-        }
-    })
+                })
+            }
+        })
+    }
 }
