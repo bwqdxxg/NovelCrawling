@@ -31,7 +31,7 @@ exports.getHtml = function (name, masterStation, address, callBack) {
     console.log('开始爬取 ' + masterStation + '：' + name)
     const timeOut = setTimeout(() => {
         isTimeout = true
-        callBack('获取资源超时！')
+        callBack(`获取${masterStation}：${name}资源超时！`)
     }, 5000)
     newHp.get(fullAddress, function (res) {
         if (timeOut) clearTimeout(timeOut)
