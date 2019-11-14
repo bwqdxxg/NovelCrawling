@@ -15,18 +15,22 @@ app.use(express.static('public'));
 
 
 app.get('/', function (req, res) {
+    res.type('html');
     res.sendFile(__dirname + "/" + "index.html");
 });
 
 app.get('/bookList', function (req, res) {
+    res.type('html');
     res.sendFile(__dirname + "/" + "bookList.html");
 });
 
 app.get('/book', function (req, res) {
+    res.type('html');
     res.sendFile(__dirname + "/" + "book.html");
 });
 
 app.get('/content', function (req, res) {
+    res.type('html');
     res.sendFile(__dirname + "/" + "content.html");
 });
 
