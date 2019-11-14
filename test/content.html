@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <link src="./index.css" />
+</head>
+
+<body>
+    <div id="class">书籍内容：</div>
+    <script>
+        var url = 'http://localhost:3002/'
+        var adress = 'content?' + window.location.search.split('?')[1]
+        $.ajax({
+            type: 'get',
+            url: url + adress,
+            success: function (data) {
+                $("#class").html(data)
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+
+</html>

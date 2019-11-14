@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <link src="./index.css" />
+</head>
+
+<body>
+    <div id="class">分类列表：</div>
+    <script>
+        var url = 'http://localhost:3002/'
+        $.ajax({
+            type: 'get',
+            url: url + 'classList?master=0',
+            success: function (data) {
+                let dc = data.class
+                for (let i = 0; i < dc.length; i++) {
+                    $("#class").append(`<div><a href='./bookList?master=0&id=${dc[i].id}&start=0&end=20'>${dc[i].name}</a></div>`)
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+
+</html>
