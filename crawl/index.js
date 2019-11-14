@@ -4,7 +4,10 @@ const { allBookList, crawlNovel } = require('./everyBookList').api
 const { getHtml } = require('./getHtml')
 const { analysisHtml } = require('./analysisHtml')
 
-exports.api = { integration, masterStationClassBooksMethods, allBooksSaveLocalhost, bookContent, crawlNovel, everyClassBooks, classBooks }
+exports.api = {
+    integration, masterStationClassBooksMethods, allBooksSaveLocalhost, bookContent,
+    crawlNovel, everyClassBooks, classBooks, masterStationClassBooks, allBookList
+}
 
 /** 爬取每个分类下所有书记列表=>爬取每个书籍的目录 */
 function integration() {
@@ -17,12 +20,6 @@ function integration() {
         }
     })
 }
-
-// masterStationClassBooksMethods((msg, comparisonIndex, data) => {console.log(msg)})
-
-// const comparison = require('../comparison.json')
-// const list = require('../books/m.x23us.com/allBooks.json')
-// allBookList(0, comparison[0], list, (msg) => console.log(msg))
 
 /** 爬取每个源每个分类下所有书籍列表 并存入到对应源文件夹的allBooks.json */
 function masterStationClassBooksMethods(callBack) {

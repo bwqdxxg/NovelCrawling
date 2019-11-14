@@ -1,7 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 const app = express()
-const { bookContent } = require('../crawl').api
+const { bookContent, crawlNovel } = require('../crawl').api
 const comparison = require('../comparison.json')
 
 // 设置跨域访问
@@ -12,6 +12,13 @@ app.all('*', function (req, res, next) {
     res.header("X-Powered-By", ' 3.2.1')
     res.header("Content-Type", "application/json;charset=utf-8")
     next()
+})
+
+/** 获取debug
+ */
+app.get('/debug', function (req, res) {
+    const debug = fs.readFileSync(`${__dirname}/../debug.txt`)
+    resMethods(res, 200, debug.toString())
 })
 
 /** 获取源配置文件
@@ -93,7 +100,9 @@ app.get('/book', function (req, res) {
         const { master, id } = query
         if (!master) return resMethods(res, 501, '没有指定源参数')
         if (!id) return resMethods(res, 501, '没有书籍ID参数')
-        const masterStation = comparison[master].address.split('://')[1].slice(0, -1)
+        const comparisonIndex = comparison[master]
+        const fullMasterStation = comparisonIndex.address
+        const masterStation = fullMasterStation.split('://')[1].slice(0, -1)
         const route = `${__dirname}/../books/${masterStation}/`
         if (fs.existsSync(route)) {
             let allBooks = fs.readFileSync(route + 'allBooks.json')
@@ -101,10 +110,13 @@ app.get('/book', function (req, res) {
                 allBooks = JSON.parse(allBooks.toString())
                 const base = allBooks.find((val) => val.id === id)
                 if (base) {
-                    let list
-                    if (fs.existsSync(route + base.name + '/list.json')) list = JSON.parse(fs.readFileSync(route + base.name + '/list.json').toString())
-                    else list = []
-                    resMethods(res, 200, { base, list })
+                    let list = []
+                    // 爬取该书籍最新的目录
+                    crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
+                        if (!success) console.log(`${base}：爬取失败`)
+                        else list = data
+                        resMethods(res, 200, { base, list })
+                    }, true, true)
                 } else {
                     resMethods(res, 500, '该源没有此书籍的数据')
                 }
@@ -150,7 +162,7 @@ function resMethods(res, status, msg) {
     res.json(msg)
 }
 
-// 配置服务端口
+/** 配置服务端口 */
 const server = app.listen(3002, function () {
     const host = server.address().address
     const port = server.address().port

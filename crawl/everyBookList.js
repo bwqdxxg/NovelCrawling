@@ -36,8 +36,8 @@ function allBookList(index, comparisonIndex, list, callBack) {
  * @param {'list' | 'content'} type 爬取类型
  * @param callBack 回调程序
  */
-function crawlNovel(name, masterStation, address, type, callBack) {
-    if (fs.existsSync(`${__dirname}/../books/${masterStation.split('://')[1]}/${name}`)) callBack(`${name}已存在，跳过下一本`)
+function crawlNovel(name, masterStation, address, type, callBack, isUpdata, notSave) {
+    if (!isUpdata && fs.existsSync(`${__dirname}/../books/${masterStation.split('://')[1]}/${name}`)) callBack(`${name}已存在，跳过下一本`)
     else {
         getHtml(name, masterStation, address, (err, html) => {
             if (err) callBack(false, err)
@@ -53,10 +53,14 @@ function crawlNovel(name, masterStation, address, type, callBack) {
                                 break
                             }
                             case 'list': {
-                                const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
-                                save(route, 'list.json', data, (success, msg) => {
-                                    callBack(success, msg)
-                                })
+                                if (!notSave) {
+                                    const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
+                                    save(route, 'list.json', data, (success, msg) => {
+                                        callBack(success, msg)
+                                    })
+                                } else {
+                                    callBack(true, name, data)
+                                }
                                 break
                             }
                             default: break
