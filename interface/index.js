@@ -90,9 +90,12 @@ app.get('/bookList', function (req, res) {
 })
 
 /** 获取指定源书籍目录
+ * 第一次获取会从爬取源获取，之后会直接读取缓存在本地的数据
  * query:
  * @param {number} master 使用第几个源
  * @param {string} id 要查找的书ID
+ * @param {string} start? 从第几条目录开始
+ * @param {string} end? 到第几条目录结束
  */
 app.get('/book', function (req, res) {
     const query = req.query
@@ -111,12 +114,58 @@ app.get('/book', function (req, res) {
                 const base = allBooks.find((val) => val.id === id)
                 if (base) {
                     let list = []
-                    // 爬取该书籍最新的目录
+                    if (fs.existsSync(route + base.name + '/list.json')) {
+                        list = JSON.parse(fs.readFileSync(route + base.name + '/list.json').toString())
+                        resMethods(res, 200, { base, list })
+                    } else {
+                        crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
+                            if (!success) console.log(`${base}：爬取失败`)
+                            else list = data
+                            resMethods(res, 200, { base, list })
+                        }, true)
+                    }
+                } else {
+                    resMethods(res, 500, '该源没有此书籍的数据')
+                }
+            } else {
+                resMethods(res, 500, '没有爬取过该源的数据')
+            }
+        } else {
+            resMethods(res, 500, '没有对应的源')
+        }
+    } else {
+        resMethods(res, 501, '没有任何参数')
+        return
+    }
+})
+
+/** 更新书籍目录
+ * query:
+ * @param {number} master 使用第几个源
+ * @param {string} id 要查找的书ID
+ */
+app.get('/updataBook', function (req, res) {
+    const query = req.query
+    if (query) {
+        const { master, id } = query
+        if (!master) return resMethods(res, 501, '没有指定源参数')
+        if (!id) return resMethods(res, 501, '没有书籍ID参数')
+        const comparisonIndex = comparison[master]
+        const fullMasterStation = comparisonIndex.address
+        const masterStation = fullMasterStation.split('://')[1].slice(0, -1)
+        const route = `${__dirname}/../books/${masterStation}/`
+        if (fs.existsSync(route)) {
+            let allBooks = fs.readFileSync(route + 'allBooks.json')
+            if (allBooks) {
+                allBooks = JSON.parse(allBooks.toString())
+                const base = allBooks.find((val) => val.id === id)
+                if (base) {
+                    let list = []
                     crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
                         if (!success) console.log(`${base}：爬取失败`)
                         else list = data
                         resMethods(res, 200, { base, list })
-                    }, true, true)
+                    }, true)
                 } else {
                     resMethods(res, 500, '该源没有此书籍的数据')
                 }

@@ -19,8 +19,10 @@ function allBookList(index, comparisonIndex, list, callBack) {
         crawlNovel(li.name, comparisonIndex.address, comparisonIndex.novelOtherAddress + li.id, 'list', (success, msg) => {
             if (success) console.log(`爬取并写入${li.name}成功,${success}`)
             else {
+                const newDate = new Date()
+                const date = `${newDate.getFullYear()}${newDate.getMonth()}${newDate.getDate()} ${newDate.getHours()}${newDate.getMinutes()}${newDate.getSeconds()}`
                 const debug = `爬取${comparisonIndex.address}源并写入${li.name}失败`
-                fs.appendFileSync(`${__dirname}/../debug.txt`, `${new Date()}：${debug}\n`)
+                fs.appendFileSync(`${__dirname}/../debug.txt`, `${date}：${debug}\n`)
                 console.log(debug)
             }
             allBookList(index + 1, comparisonIndex, list, callBack)
@@ -56,7 +58,7 @@ function crawlNovel(name, masterStation, address, type, callBack, isUpdata, notS
                                 if (!notSave) {
                                     const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
                                     save(route, 'list.json', data, (success, msg) => {
-                                        callBack(success, msg)
+                                        callBack(success, msg, data)
                                     })
                                 } else {
                                     callBack(true, name, data)
