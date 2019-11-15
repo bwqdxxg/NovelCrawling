@@ -32,7 +32,7 @@ exports.getHtml = function (name, masterStation, address, callBack) {
     const timeOut = setTimeout(() => {
         isTimeout = true
         callBack(`获取${masterStation}：${name}资源超时！`)
-    }, 5000)
+    }, 20000)
     newHp.get(fullAddress, function (res) {
         if (timeOut) clearTimeout(timeOut)
         if (isTimeout) return
