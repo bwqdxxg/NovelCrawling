@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <div><input type="text" placeholder="搜索书籍"><button id="search">搜索</button></div>
     <div id="class">分类列表：</div>
     <script>
         var url = 'http://localhost:3002/'
@@ -23,6 +24,12 @@
             error: function (err) {
                 console.log(err)
             }
+        })
+        $(document).ready(function () {
+            $('#search').click(function () {
+                const val = $('input').val()
+                if (val) window.location.href = `./search?master=0&name=${val}`
+            })
         })
     </script>
 </body>

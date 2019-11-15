@@ -181,6 +181,44 @@ app.get('/updataBook', function (req, res) {
     }
 })
 
+/** 搜索书籍
+ * query:
+ * @param {number} master 使用第几个源
+ * @param {string} name 要查找的书名
+ */
+app.get('/search', function (req, res) {
+    const query = req.query
+    if (query) {
+        const { master, name } = query
+        if (!master) return resMethods(res, 501, '没有指定源参数')
+        if (!name) return resMethods(res, 501, '没有书籍名称参数')
+        const comparisonIndex = comparison[master]
+        const fullMasterStation = comparisonIndex.address
+        const masterStation = fullMasterStation.split('://')[1].slice(0, -1)
+        const route = `${__dirname}/../books/${masterStation}/`
+        if (fs.existsSync(route)) {
+            let allBooks = fs.readFileSync(route + 'allBooks.json')
+            if (allBooks) {
+                allBooks = JSON.parse(allBooks.toString())
+                let list = []
+                for (let i = 0; i < allBooks.length; i++) {
+                    if (allBooks[i].name.indexOf(name) !== -1) {
+                        list.push(allBooks[i])
+                    }
+                }
+                resMethods(res, 200, { list })
+            } else {
+                resMethods(res, 500, '没有爬取过该源的数据')
+            }
+        } else {
+            resMethods(res, 500, '没有对应的源')
+        }
+    } else {
+        resMethods(res, 501, '没有任何参数')
+        return
+    }
+})
+
 /** 获取指定源对应书籍文章
  * query:
  * @param {number} master 使用第几个源

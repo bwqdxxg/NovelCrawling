@@ -34,4 +34,9 @@ app.get('/content', function (req, res) {
     res.sendFile(__dirname + "/" + "content.html");
 });
 
+app.get('/search', function (req, res) {
+    res.type('html');
+    res.sendFile(__dirname + "/" + "search.html");
+});
+
 var server = app.listen(3000)
