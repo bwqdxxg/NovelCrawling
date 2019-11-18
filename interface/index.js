@@ -119,7 +119,7 @@ app.get('/book', function (req, res) {
                         resMethods(res, 200, { base, list })
                     } else {
                         crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
-                            if (!success) console.log(`${base}：爬取失败`)
+                            if (!success) console.log(`${base.name}：爬取失败`)
                             else list = data
                             resMethods(res, 200, { base, list })
                         }, true)
@@ -162,7 +162,7 @@ app.get('/updataBook', function (req, res) {
                 if (base) {
                     let list = []
                     crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
-                        if (!success) console.log(`${base}：爬取失败`)
+                        if (!success) console.log(`${base.name}：爬取失败`)
                         else list = data
                         resMethods(res, 200, { base, list })
                     }, true)
