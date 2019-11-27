@@ -3,7 +3,7 @@
 
 <head>
     <meta charSet="utf-8" />
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <link src="./index.css" />
 </head>
@@ -15,35 +15,25 @@
         var url = 'http://localhost:3002/'
         var adress = 'book?' + window.location.search.split('?')[1]
         var id = window.location.search.split('id=')[1]
-        $.ajax({
-            type: 'get',
-            url: url + adress,
-            success: function (data) {
-                let dc = data.list
-                for (let i = 0; i < dc.length; i++) {
-                    $("#class").append(`<div><a href='./content?master=0&id=${id}&chapter=${dc[i].address}'>${dc[i].chapterName}</a></div>`)
-                }
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        })
-        $(document).ready(function () {
-            var adress = 'updataBook?' + window.location.search.split('?')[1]
-            $('#updataBtn').click(function () {
-                $.ajax({
-                    type: 'get',
-                    url: url + adress,
-                    success: function (data) {
-                        let dc = data.list
-                        for (let i = 0; i < dc.length; i++) {
-                            $("#class").append(`<div><a href='./content?master=0&id=${id}&chapter=${dc[i].address}'>${dc[i].chapterName}</a></div>`)
-                        }
-                    },
-                    error: function (err) {
-                        console.log(err)
+        function start(other) {
+            $.ajax({
+                type: 'get',
+                url: url + adress + (other || ''),
+                success: function (data) {
+                    let dc = data.list
+                    for (let i = 0; i < dc.length; i++) {
+                        $("#class").append(`<div><a href='./content?master=0&id=${id}&chapter=${dc[i].address}'>${dc[i].chapterName}</a></div>`)
                     }
-                })
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+        start()
+        $(document).ready(function () {
+            $('#updataBtn').click(function () {
+                start('&updata=true')
             })
         })
     </script>

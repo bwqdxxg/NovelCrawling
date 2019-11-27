@@ -35,7 +35,7 @@ function allBookList(index, comparisonIndex, list, callBack) {
  * @param name 书籍名称
  * @param masterStation 主站地址
  * @param address 书籍路径/ID
- * @param {'list' | 'content'} type 爬取类型
+ * @param {'list' | 'content' | 'intro'} type 爬取类型
  * @param callBack 回调程序
  */
 function crawlNovel(name, masterStation, address, type, callBack, isUpdata, notSave) {
@@ -58,6 +58,17 @@ function crawlNovel(name, masterStation, address, type, callBack, isUpdata, notS
                                 if (!notSave) {
                                     const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
                                     save(route, 'list.json', data, (success, msg) => {
+                                        callBack(success, msg, data)
+                                    })
+                                } else {
+                                    callBack(true, name, data)
+                                }
+                                break
+                            }
+                            case 'intro': {
+                                if (!notSave) {
+                                    const route = `${__dirname}/../books/${masterStation.split('://')[1]}/${name}`
+                                    save(route, 'intro.json', data, (success, msg) => {
                                         callBack(success, msg, data)
                                     })
                                 } else {

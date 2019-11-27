@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <link src="./index.css" />
+</head>
+
+<body>
+    <img id="img">
+    <div id="name"></div>
+    <p id="author">作者：</p>
+    <p id="class">分类：</p>
+    <p id="state">状态：</p>
+    <p id="updata">更新：</p>
+    <p id="latest">最新：</p>
+    <button id="updataBtn">获取最新信息</button>
+    <a id="start">开始阅读</a>
+    <script>
+        var url = 'http://localhost:3002/'
+        var adress = 'intro?' + window.location.search.split('?')[1]
+        function start(other) {
+            $.ajax({
+                type: 'get',
+                url: url + adress + (other || ''),
+                success: function (data) {
+                    let { base, list } = data
+                    $("#img").attr("src", list.img)
+                    $("#name").text("《" + $("#name").text() + base.name + "》")
+                    $("#author").text($("#author").text() + base.author)
+                    $("#class").text($("#class").text() + base.className)
+                    $("#state").text($("#state").text() + list.state)
+                    $("#updata").text($("#updata").text() + list.updata)
+                    $("#latest").text($("#latest").text() + list.latest)
+                    $("#start").attr('href', `./book?master=0&id=${base.id}`)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+        start()
+        $(document).ready(function () {
+            $('#updataBtn').click(function () {
+                start('&updata=true')
+            })
+        })
+    </script>
+</body>
+
+</html>

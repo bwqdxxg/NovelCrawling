@@ -4,6 +4,7 @@
         "address": "https://m.x23us.com/",
         "novelOtherAddress": "html/",
         "classOtherAddress": "class/",
+        "introOtherAddress": "book/",
         "classArr": [
             {
                 "name": "玄幻魔法",

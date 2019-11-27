@@ -44,7 +44,7 @@ app.get('/classList', function (req, res) {
     }
 })
 
-/** 获取指定源书籍列表
+/** 获取指定源指定分类下的书籍列表
  * query:
  * @param {number} master 使用第几个源
  * @param {string} id 书分类ID
@@ -89,18 +89,17 @@ app.get('/bookList', function (req, res) {
     }
 })
 
-/** 获取指定源书籍目录
+/** 获取指定源书籍基本信息
  * 第一次获取会从爬取源获取，之后会直接读取缓存在本地的数据
  * query:
  * @param {number} master 使用第几个源
  * @param {string} id 要查找的书ID
- * @param {string} start? 从第几条目录开始
- * @param {string} end? 到第几条目录结束
+ * @param {boolean} updata 是否为更新
  */
-app.get('/book', function (req, res) {
+app.get('/intro', function (req, res) {
     const query = req.query
     if (query) {
-        const { master, id } = query
+        const { master, id, updata } = query
         if (!master) return resMethods(res, 501, '没有指定源参数')
         if (!id) return resMethods(res, 501, '没有书籍ID参数')
         const comparisonIndex = comparison[master]
@@ -114,11 +113,11 @@ app.get('/book', function (req, res) {
                 const base = allBooks.find((val) => val.id === id)
                 if (base) {
                     let list = []
-                    if (fs.existsSync(route + base.name + '/list.json')) {
-                        list = JSON.parse(fs.readFileSync(route + base.name + '/list.json').toString())
+                    if (!updata && fs.existsSync(route + base.name + '/intro.json')) {
+                        list = JSON.parse(fs.readFileSync(route + base.name + '/intro.json').toString())
                         resMethods(res, 200, { base, list })
                     } else {
-                        crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
+                        crawlNovel(base.name, fullMasterStation, comparisonIndex.introOtherAddress + base.id.split('/')[1], 'intro', (success, name, data) => {
                             if (!success) console.log(`${base.name}：爬取失败`)
                             else list = data
                             resMethods(res, 200, { base, list })
@@ -139,15 +138,17 @@ app.get('/book', function (req, res) {
     }
 })
 
-/** 更新书籍目录
+/** 获取指定源书籍目录
+ * 第一次获取会从爬取源获取，之后会直接读取缓存在本地的数据
  * query:
  * @param {number} master 使用第几个源
  * @param {string} id 要查找的书ID
+ * @param {boolean} updata 是否为更新
  */
-app.get('/updataBook', function (req, res) {
+app.get('/book', function (req, res) {
     const query = req.query
     if (query) {
-        const { master, id } = query
+        const { master, id, updata } = query
         if (!master) return resMethods(res, 501, '没有指定源参数')
         if (!id) return resMethods(res, 501, '没有书籍ID参数')
         const comparisonIndex = comparison[master]
@@ -161,11 +162,16 @@ app.get('/updataBook', function (req, res) {
                 const base = allBooks.find((val) => val.id === id)
                 if (base) {
                     let list = []
-                    crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
-                        if (!success) console.log(`${base.name}：爬取失败`)
-                        else list = data
+                    if (!updata && fs.existsSync(route + base.name + '/list.json')) {
+                        list = JSON.parse(fs.readFileSync(route + base.name + '/list.json').toString())
                         resMethods(res, 200, { base, list })
-                    }, true)
+                    } else {
+                        crawlNovel(base.name, fullMasterStation, comparisonIndex.novelOtherAddress + base.id, 'list', (success, name, data) => {
+                            if (!success) console.log(`${base.name}：爬取失败`)
+                            else list = data
+                            resMethods(res, 200, { base, list })
+                        }, true)
+                    }
                 } else {
                     resMethods(res, 500, '该源没有此书籍的数据')
                 }
@@ -219,7 +225,7 @@ app.get('/search', function (req, res) {
     }
 })
 
-/** 获取指定源对应书籍文章
+/** 获取指定源对应书籍文章内容
  * query:
  * @param {number} master 使用第几个源
  * @param {string} id 要查找的书ID

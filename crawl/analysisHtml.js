@@ -34,12 +34,12 @@ exports.analysisHtml = function (masterStation, name, html, type, callBack) {
 /** 顶点小说手机版 html解析
  * @param name 书籍/分类名称
  * @param html
- * @param {'allClass' | 'classMaxPage' | 'class' | 'list' | 'content'} type 爬取类型
+ * @param {'class' | 'list' | 'content' | 'intro'} type 爬取类型
  * @param {(err:string, name:string, data) => void} callBack 内容回调
  */
 function ddxssjbHtml(name, html, type, callBack) {
     switch (type) {
-        // 分类下文章列表
+        // 分类下书籍列表
         case 'class': {
             let list = []
             const htmlSplit = html.split('<p class="line"><a href="/html/')
@@ -58,6 +58,20 @@ function ddxssjbHtml(name, html, type, callBack) {
         case 'content': {
             const content = html.split('<div class="txt" id="txt">')[1].split('</div>')[0]
             callBack(null, name, content)
+            break
+        }
+        // 文章基础信息
+        case 'intro': {
+            if (!html.split('<div class="intro_info">')[1]) {
+                callBack('没有找到书籍基本信息')
+            } else {
+                const intro = html.split('<div class="intro_info">')[1].split('</div>')[0]
+                const img = html.split('block_img2"><img src="')[1].split('"')[0]
+                const state = html.split('状态：')[1].split('</p>')[0]
+                const updata = html.split('更新：')[1].split('</p>')[0]
+                const latest = html.split('最新：')[1].split('>')[1].split('<')[0]
+                callBack(null, name, { intro, img, state, updata, latest })
+            }
             break
         }
         // 文章目录

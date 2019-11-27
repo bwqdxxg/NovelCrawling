@@ -8,11 +8,9 @@ const fs = require('fs')
  * @param {(success: boolean, msg: string) => void} callBack
  */
 exports.save = function (route, name, list, callBack) {
-    if (!list || !list.length) return callBack(false, '要写入的内容不存在')
-    if (fs.existsSync(route)) deleteFolderRecursive(route)
-    // recursive：递归创建文件夹
-    fs.mkdir(route, { recursive: true }, (err) => {
-        if (err) console.log(err)
+    if (!list) return callBack(false, '要写入的内容不存在')
+    if (fs.existsSync(route)) {
+        if (fs.existsSync(`${route}/${name}`)) fs.unlinkSync(`${route}/${name}`)
         let isErr = false
         fs.writeFileSync(`${route}/${name}`, JSON.stringify(list), (error) => {
             if (error) {
@@ -21,7 +19,20 @@ exports.save = function (route, name, list, callBack) {
             }
         })
         if (!isErr) callBack(true, '存入本地完成！')
-    })
+    } else {
+        // recursive：递归创建文件夹
+        fs.mkdir(route, { recursive: true }, (err) => {
+            if (err) console.log(err)
+            let isErr = false
+            fs.writeFileSync(`${route}/${name}`, JSON.stringify(list), (error) => {
+                if (error) {
+                    callBack(false, error)
+                    isErr = true
+                }
+            })
+            if (!isErr) callBack(true, '存入本地完成！')
+        })
+    }
 }
 
 /** 递归删除文件夹和文件 */

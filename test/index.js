@@ -24,6 +24,11 @@ app.get('/bookList', function (req, res) {
     res.sendFile(__dirname + "/" + "bookList.html");
 });
 
+app.get('/intro', function (req, res) {
+    res.type('html');
+    res.sendFile(__dirname + "/" + "intro.html");
+});
+
 app.get('/book', function (req, res) {
     res.type('html');
     res.sendFile(__dirname + "/" + "book.html");
