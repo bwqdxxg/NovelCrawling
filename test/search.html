@@ -19,7 +19,7 @@
             success: function (data) {
                 let dc = data.list
                 for (let i = 0; i < dc.length; i++) {
-                    $("#class").append(`<div><a href='./book?master=0&id=${dc[i].id}'>${dc[i].name}</a></div>`)
+                    $("#class").append(`<div><a href='./intro?master=0&id=${dc[i].id}'>${dc[i].name}</a></div>`)
                 }
             },
             error: function (err) {
