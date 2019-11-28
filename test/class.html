@@ -29,32 +29,28 @@
         <li><a href="/class">分类</a></li>
     </ul>
     <br />
-    <div id="class1">大家都在看</div>
-    <div id="class2">玄幻魔法推荐</div>
-    <div id="class3">武侠修真推荐</div>
-    <div id="class4">都市言情推荐</div>
-    <div id="class5">历史军事推荐</div>
-    <div id="class6">侦探推理推荐</div>
-    <div id="class7">网游动漫推荐</div>
-    <div id="class8">科幻小说推荐</div>
-    <div id="class9">恐怖灵异推荐</div>
-    <div id="class10">散文诗词推荐</div>
-    <div id="class11">其他类型推荐</div>
+    <div><input type="text" placeholder="搜索书籍"><button id="search">搜索</button></div>
+    <div id="class">分类列表：</div>
     <script>
         var url = 'http://localhost:3002/'
         $.ajax({
             type: 'get',
-            url: url + 'numberClicks',
+            url: url + 'classList?master=0',
             success: function (data) {
-                if (data) {
-                    let className = ['玄幻魔法', '武侠修真', '都市言情', '历史军事', '侦探推理', '网游动漫', '科幻小说', '恐怖灵异', '散文诗词', '其他类型']
-                    const newData = JSON.parse(data)
-                    console.log(newData);
+                let dc = data.class
+                for (let i = 0; i < dc.length; i++) {
+                    $("#class").append(`<div><a href='./bookList?master=0&id=${dc[i].id}&start=0&end=1500'>${dc[i].name}</a></div>`)
                 }
             },
             error: function (err) {
                 console.log(err)
             }
+        })
+        $(document).ready(function () {
+            $('#search').click(function () {
+                const val = $('input').val()
+                if (val) window.location.href = `./search?master=0&name=${val}`
+            })
         })
     </script>
 </body>

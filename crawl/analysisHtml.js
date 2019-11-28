@@ -66,7 +66,8 @@ function ddxssjbHtml(name, html, type, callBack) {
                 callBack('没有找到书籍基本信息')
             } else {
                 const intro = html.split('<div class="intro_info">')[1].split('</div>')[0]
-                const img = html.split('block_img2"><img src="')[1].split('"')[0]
+                let img = html.split('block_img2"><img src="')[1].split('"')[0]
+                if (img === 'https://m.x23us.com/modules/article/images/nocover.jpg') img = ''
                 const state = html.split('状态：')[1].split('</p>')[0]
                 const updata = html.split('更新：')[1].split('</p>')[0]
                 const latest = html.split('最新：')[1].split('>')[1].split('<')[0]

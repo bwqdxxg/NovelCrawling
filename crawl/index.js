@@ -3,10 +3,11 @@ const { masterStationClassBooks, everyClassBooks, classBooks } = require('./ever
 const { allBookList, crawlNovel } = require('./everyBookList').api
 const { getHtml } = require('./getHtml')
 const { analysisHtml } = require('./analysisHtml')
+const { numberClicks } = require('./numberClicks').api
 
 exports.api = {
     integration, masterStationClassBooksMethods, allBooksSaveLocalhost, bookContent,
-    crawlNovel, everyClassBooks, classBooks, masterStationClassBooks, allBookList
+    crawlNovel, everyClassBooks, classBooks, masterStationClassBooks, allBookList, numberClicks
 }
 
 /** 爬取每个分类下所有书记列表=>爬取每个书籍的目录 */

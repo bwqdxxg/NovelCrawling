@@ -13,10 +13,14 @@ app.all('*', function (req, res, next) {
 
 app.use(express.static('public'));
 
-
 app.get('/', function (req, res) {
     res.type('html');
     res.sendFile(__dirname + "/" + "index.html");
+});
+
+app.get('/class', function (req, res) {
+    res.type('html');
+    res.sendFile(__dirname + "/" + "class.html");
 });
 
 app.get('/bookList', function (req, res) {
