@@ -50,7 +50,7 @@ exports.getHtml = function (name, masterStation, address, callBack, ranks) {
         if (isTimeout === 2) return
         else {
             isTimeout = 1
-            getHtml(name, masterStation, address, (err, html) => {
+            this.getHtml(name, masterStation, address, (err, html) => {
                 console.log('err：', err, ranks);
                 callBack(err)
             }, ranks + 1)
