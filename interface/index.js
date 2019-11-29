@@ -1,7 +1,7 @@
 const fs = require('fs')
 const express = require('express')
 const app = express()
-const { bookContent, crawlNovel, numberClicks } = require('../crawl').api
+const { bookContent, crawlNovel, numberClicks, getNumberClicks } = require('../crawl').api
 const comparison = require('../comparison.json')
 
 // 设置跨域访问
@@ -161,7 +161,7 @@ app.get('/intro', function (req, res) {
                 allBooks = JSON.parse(allBooks.toString())
                 const base = allBooks.find((val) => val.id === id)
                 if (base) {
-                    numberClicks(base.author, base.className, base.name)
+                    numberClicks(base)
                     let list = []
                     if (!updata && fs.existsSync(route + base.name + '/intro.json')) {
                         list = JSON.parse(fs.readFileSync(route + base.name + '/intro.json').toString())
@@ -278,14 +278,19 @@ app.get('/searchIntro', function (req, res) {
     }
 })
 
-/** 每本书阅读量 */
+/** 获取全部有阅读量的书籍和基础信息
+ * @param {number} master 使用第几个源，可不传；不传则只返回点击量数据没有基础信息
+ */
 app.get('/numberClicks', function (req, res) {
-    const route = `${__dirname}/../books/numberClicks.json`
-    if (fs.existsSync(route)) {
-        const numberClicks = fs.readFileSync(route).toString()
-        resMethods(res, 200, numberClicks)
+    const query = req.query
+    if (query) {
+        const { master } = query
+        const masterStation = master ? comparison[master].address.split('://')[1].slice(0, -1) : ''
+        const list = getNumberClicks(masterStation)
+        resMethods(res, 200, list)
     } else {
-        resMethods(res, 200, {})
+        resMethods(res, 501, '没有任何参数')
+        return
     }
 })
 

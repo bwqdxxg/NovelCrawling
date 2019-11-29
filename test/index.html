@@ -28,36 +28,39 @@
         <li><a href="/">首页</a></li>
         <li><a href="/class">分类</a></li>
     </ul>
-    <br />
-    <div id="class1">大家都在看</div>
-    <div id="class2">玄幻魔法推荐</div>
-    <div id="class3">武侠修真推荐</div>
-    <div id="class4">都市言情推荐</div>
-    <div id="class5">历史军事推荐</div>
-    <div id="class6">侦探推理推荐</div>
-    <div id="class7">网游动漫推荐</div>
-    <div id="class8">科幻小说推荐</div>
-    <div id="class9">恐怖灵异推荐</div>
-    <div id="class10">散文诗词推荐</div>
-    <div id="class11">其他类型推荐</div>
     <script>
         var url = 'http://localhost:3002/'
-        $.ajax({
-            type: 'get',
-            url: url + 'numberClicks',
-            success: function (data) {
-                if (data) {
-                    let className = ['玄幻魔法', '武侠修真', '都市言情', '历史军事', '侦探推理', '网游动漫', '科幻小说', '恐怖灵异', '散文诗词', '其他类型']
-                    const newData = JSON.parse(data)
-                    const newDataKeys = Object.keys(newData)
-                    for (let i = 0; i < newDataKeys.length; i++) {
-                        //
-                    }
-                    console.log(newData);
+        function start(address, callBack) {
+            $.ajax({
+                type: 'get',
+                url: url + address,
+                success: function (data) {
+                    callBack(data)
+                },
+                error: function (err) {
+                    callBack(false)
                 }
-            },
-            error: function (err) {
-                console.log(err)
+            })
+        }
+        start('numberClicks?master=0', (data) => {
+            if (data) {
+                const dataKeys = Object.keys(data)
+                for (let i = 0; i < dataKeys.length; i++) {
+                    const n = data[dataKeys[i]]
+                    $('body').append(`<div id='${i + 1}'><h3>${dataKeys[i]}推荐</h3><ul></ul></div>`)
+                    for (let i2 = 0; i2 < n.length; i2++) {
+                        const n2 = n[i2]
+                        if (i2 === 0) {
+                            const intro = n2.intro
+                            $(`#${i + 1} ul`).append(
+                                `<li style='display:block;border-bottom:1px solid #ddd'><img width='80' height='100' src=${intro.img
+                                || 'https://goss3.cfp.cn/creative/vcg/veer/800/new/VCG41N650752766.jpg?x-oss-process=image/format,jpg/interlace,1'
+                                } /><a href='./intro?master=0&id=${n2.id}'>${n[i2].name}</a></li>`)
+                        } else {
+                            $(`#${i + 1} ul`).append(`<li style='display:block;border-bottom:1px solid #ddd'><a href='./intro?master=0&id=${n2.id}'>${n[i2].name}</a></li>`)
+                        }
+                    }
+                }
             }
         })
     </script>
