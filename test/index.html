@@ -45,11 +45,13 @@
         start('numberClicks?master=0', (data) => {
             if (data) {
                 const dataKeys = Object.keys(data)
+                dataKeys.reverse()
                 for (let i = 0; i < dataKeys.length; i++) {
                     const n = data[dataKeys[i]]
                     $('body').append(`<div id='${i + 1}'><h3>${dataKeys[i]}推荐</h3><ul></ul></div>`)
                     for (let i2 = 0; i2 < n.length; i2++) {
                         const n2 = n[i2]
+                        if (i2 >= 10) break
                         if (i2 === 0) {
                             const intro = n2.intro
                             $(`#${i + 1} ul`).append(
