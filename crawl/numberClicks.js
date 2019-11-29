@@ -21,7 +21,8 @@ function numberClicks(base) {
     if (!newList || !newList.length) list[className] = [{ ...base, click: 1 }, ...list[className]]
     else newList[0].click++
     save(route, 'numberClicks.json', list, (success, msg) => {
-        console.log(msg)
+        if (success) console.log(`${base.name}增加 1 阅读量`)
+        else console.log('增加阅读量失败')
     })
 }
 
