@@ -4,6 +4,7 @@ const http = require('http')
 const https = require('https')
 const iconv = require('iconv-lite')
 
+exports.api = { getHtml }
 /**
  * 获取指定源的HTML
  * @param name 爬取对象名称
@@ -11,7 +12,7 @@ const iconv = require('iconv-lite')
  * @param address 后续路径
  * @param {(err:string, html:string) => void} callBack 回调程序
  */
-exports.getHtml = function (name, masterStation, address, callBack, ranks) {
+function getHtml(name, masterStation, address, callBack, ranks) {
     // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
     if (!ranks) ranks = 0
     if (ranks >= 3) return callBack(`重复请求已达${ranks}次，跳过`)
@@ -50,7 +51,7 @@ exports.getHtml = function (name, masterStation, address, callBack, ranks) {
         if (isTimeout === 2) return
         else {
             isTimeout = 1
-            this.getHtml(name, masterStation, address, (err, html) => {
+            getHtml(name, masterStation, address, (err, html) => {
                 console.log('err：', err, ranks);
                 callBack(err)
             }, ranks + 1)

@@ -1,7 +1,7 @@
 const { save } = require('./save')
 const { masterStationClassBooks, everyClassBooks, classBooks } = require('./everyClassBooks').api
 const { allBookList, crawlNovel } = require('./everyBookList').api
-const { getHtml } = require('./getHtml')
+const { getHtml } = require('./getHtml').api
 const { analysisHtml } = require('./analysisHtml')
 const { numberClicks, getNumberClicks } = require('./numberClicks').api
 

@@ -1,6 +1,6 @@
 /** 爬取所有书籍目录方法集 */
 const fs = require('fs')
-const { getHtml } = require('./getHtml')
+const { getHtml } = require('./getHtml').api
 const { analysisHtml } = require('./analysisHtml')
 const { save } = require('./save')
 
